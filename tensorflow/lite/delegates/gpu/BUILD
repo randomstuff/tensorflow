@@ -38,7 +38,9 @@ cc_library(
             # https://source.android.com/compatibility/10/android-10-cdd#7_1_4_1_opengl_es
             "-lGLESv2",
         ],
-        "//conditions:default": [],
+        "//conditions:default": [
+          "-lEGL",
+        ],
     }),
     deps = [
         "@com_google_absl//absl/base:core_headers",
@@ -130,6 +132,7 @@ cc_binary(
         "//tensorflow:windows": [],
         "//conditions:default": [
             "-fvisibility=hidden",
+            "-lEGL",
         ],
     }),
     linkshared = 1,

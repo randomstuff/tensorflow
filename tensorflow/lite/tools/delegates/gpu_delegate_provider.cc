@@ -16,7 +16,7 @@ limitations under the License.
 
 #include "tensorflow/lite/tools/delegates/delegate_provider.h"
 #include "tensorflow/lite/tools/evaluation/utils.h"
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) || defined(__linux__)
 #include "tensorflow/lite/delegates/gpu/delegate.h"
 #elif defined(__APPLE__)
 #include "TargetConditionals.h"
@@ -34,13 +34,13 @@ class GpuDelegateProvider : public DelegateProvider {
  public:
   GpuDelegateProvider() {
     default_params_.AddParam("use_gpu", ToolParam::Create<bool>(false));
-#if defined(__ANDROID__) || defined(REAL_IPHONE_DEVICE)
+#if defined(__ANDROID__) || defined(REAL_IPHONE_DEVICE) || defined(__linux__)
     default_params_.AddParam("gpu_precision_loss_allowed",
                              ToolParam::Create<bool>(true));
     default_params_.AddParam("gpu_experimental_enable_quant",
                              ToolParam::Create<bool>(true));
 #endif
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) || defined(__linux__)
     default_params_.AddParam("gpu_backend", ToolParam::Create<std::string>(""));
 #endif
 #if defined(REAL_IPHONE_DEVICE)
@@ -70,7 +70,7 @@ std::vector<Flag> GpuDelegateProvider::CreateFlags(ToolParams* params) const {
                      "Whether to enable the GPU delegate to run quantized "
                      "models or not. By default, it's enabled."),
 #endif
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) || defined(__linux__)
     CreateFlag<std::string>(
         "gpu_backend", params,
         "Force the GPU delegate to use a particular backend for execution, and "
@@ -94,7 +94,7 @@ void GpuDelegateProvider::LogParams(const ToolParams& params) const {
   TFLITE_LOG(INFO) << "Enable running quant models in gpu : ["
                    << params.Get<bool>("gpu_experimental_enable_quant") << "]";
 #endif
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) || defined(__linux__)
   TFLITE_LOG(INFO) << "GPU backend : ["
                    << params.Get<std::string>("gpu_backend") << "]";
 #endif
@@ -109,7 +109,7 @@ TfLiteDelegatePtr GpuDelegateProvider::CreateTfLiteDelegate(
   TfLiteDelegatePtr delegate(nullptr, [](TfLiteDelegate*) {});
 
   if (params.Get<bool>("use_gpu")) {
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) || defined(__linux__)
     TfLiteGpuDelegateOptionsV2 gpu_opts = TfLiteGpuDelegateOptionsV2Default();
     if (params.Get<bool>("gpu_precision_loss_allowed")) {
       gpu_opts.inference_priority1 = TFLITE_GPU_INFERENCE_PRIORITY_MIN_LATENCY;

@@ -114,7 +114,7 @@ TfLiteDelegatePtr CreateNNAPIDelegate(StatefulNnApiDelegate::Options options) {
 }
 #endif  // defined(__ANDROID__)
 
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) || defined(__linux__)
 TfLiteDelegatePtr CreateGPUDelegate(TfLiteGpuDelegateOptionsV2* options) {
   return TfLiteDelegatePtr(TfLiteGpuDelegateV2Create(options),
                            &TfLiteGpuDelegateV2Delete);

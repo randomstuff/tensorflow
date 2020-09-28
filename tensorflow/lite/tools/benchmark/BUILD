@@ -36,7 +36,10 @@ cc_binary(
             "-lm",  # some builtin ops, e.g., tanh, need -lm
             "-Wl,--rpath=/data/local/tmp/",  # Hexagon delegate libraries should be in /data/local/tmp
         ],
-        "//conditions:default": [],
+        "//conditions:default": [
+          "-lEGL",
+          "-lGL",
+        ],
     }),
     tags = ["builder_default_android_arm64"],
     deps = [
